@@ -1,5 +1,6 @@
 "OPTIMIZING DATACLASS"
 from dataclasses import dataclass
+import pprint
 
 @dataclass
 class SimplerPosition:
@@ -23,3 +24,5 @@ class SlotPosition:
     lon:float
     lat:float
     
+
+pprint()

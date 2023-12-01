@@ -108,12 +108,16 @@ async def message_attach_multiple(filename,message):
                 selected file is: ==========
                 maint type ={mt_} sub = {sub}
                 ''')
-        with open(filename,"rb") as fp:
-            part = MIMEBase(mt_,sub)
-            part.set_payload(fp.read())
-            part.add_header('Content-Disposition',"attachments; filename= %s" % os.path.basename(filename))
-            encoders.encode_base64(part)
-            message.attach(part)
+        
+        if filename != None:
+            with open(filename,"rb") as fp:
+                part = MIMEBase(mt_,sub)
+                part.set_payload(fp.read())
+                part.add_header('Content-Disposition',"attachments; filename= %s" % os.path.basename(str(filename)))
+                encoders.encode_base64(part)
+                message.attach(part)
+        else:
+            print("File not found...")
     
 async def return_guessed_mime_type(file_name):
     _mtype,sub = guess_mime_type(file_name,False)
@@ -138,20 +142,23 @@ async def create_body(message_entry,destination,subject):
     if(attachment == 'yes'):
         print('Here an attachments...')
         message = MIMEMultipart()
+        message.attach(MIMEText(message_entry))
         message['To'] = destination
         message['From'] = 'pranjalorg11@gmail.com'
-        message['Subject'] = subject
+        message['Subject'] = subject or "HELLO"
         if int(input("want to select multiple files: 1 - YES: ")) == 1:
             files = askopenfiles('r')
             str1 = []
             for i in files:
                 str1.append(i.name)
             for i in str1:
-                task  = asyncio.create_task(add_attachment(message,str(i)))
-                await asyncio.sleep(2)
+                task  = asyncio.create_task(add_attachment(message,i))
+                await asyncio.sleep(.89)
 
         else:
             files  = askopenfilename()
+            task  = asyncio.create_task(add_attachment(message,files))
+            await asyncio.sleep(0.54)
 
     elif attachment == 'no':
         message = MIMEText(message_entry)

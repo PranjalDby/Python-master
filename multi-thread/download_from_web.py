@@ -20,19 +20,20 @@ def download(url, filename):
     if (response.headers.get('Content-Type') == 'image/jpeg'):
         download_helper(response,filename,'jpeg',length)
     elif (response.headers.get('Content-Type') == 'audio/mp4'):
-        download_helper(response,filename,'mp4',length)
+        download_helper(response,filename,'mp3',length)
+
     else:
-        download_helper(response,filename,'exe',length)
+        download_helper(response,filename,'zip',length)
 
 
 def download_helper(response,file_name,type,length):
     try:
         with open(f"{file_name}.{type}", 'wb') as file:
-            for i in response.iter_content(chunk_size=100 * 1024):
-                dowloaded = (len(i)/length) * 100
-                print("Downloading {} completed".format(dowloaded))
+            for i in response.iter_content(chunk_size=1 * 1024 * 1024):
+                dowloaded = ((length - len(i))/1024 ** 2)/100
+                print("downloaded{%1.2f}"%dowloaded)
                 file.write(i)
-                time.sleep(0.2)
+                time.sleep(0.1)
     except Exception as e:
         print("error")
 
@@ -46,7 +47,7 @@ def download_helper(response,file_name,type,length):
 if __name__ == '__main__':
     print("QAt maia")
     with ThreadPoolExecutor(max_workers=3) as e:
-            for i in ["https://open.spotify.com/track/2V1aBVAXcY4jqQRBRxi2kQ"]:
+            for i in music_list:
                 filename = str(input(f"Enter the file name for {i} = \n"))
                 e.submit(download,i,filename)
                 time.sleep(1)

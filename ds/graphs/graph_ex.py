@@ -78,9 +78,10 @@ def largest_component(graph):
 visited  = set()
 q = deque()
 def shortest_path(graph,start,dest,distance= 0):
-    q.append([start,0])
+   
     while len(q) > 0:
-        curr,distance = q.popleft()
+        curr,distance= q.popleft()
+        print(curr)
         if curr == dest:
             return distance
         
@@ -110,6 +111,8 @@ def create_adjacency_list(edges):
 edges = [['w','x'],['x','y'],['z','y'],['z','v'],['w','v']]
 
 graph = create_adjacency_list(edges)
+print(graph)
+# print(shortest_path(graph,'w','z'))
 
 # Islands Count
 
