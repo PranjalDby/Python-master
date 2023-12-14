@@ -4,7 +4,9 @@
 Sometimes we need to pass argument to the __init__ that are not instance fields.
 Such arguments are called init-only variables and are defined in the __init_subclass__ method.
 """
-
+# Important differences b/w data classes and typing.NamedTuple is dataclass contains mutable object as NamedTuple doesn't contain it
+# 2. inheritance support
+# 3. property decorators
 from dataclasses import dataclass, InitVar, field, fields
 
 # for Dublin Core Metadata Initiative example

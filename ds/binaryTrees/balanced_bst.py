@@ -77,8 +77,6 @@ class Balanced_Bst:
         return root.height
 
         
-        
-    
     def get_balance_factor(self,root):
         if root == None:
             return 0
