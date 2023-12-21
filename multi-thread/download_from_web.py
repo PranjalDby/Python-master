@@ -3,15 +3,6 @@ import random
 import threading
 import requests
 import time
-download_list = [
-    "https://w0.peakpx.com/wallpaper/600/322/HD-wallpaper-anime-boy-anime-boy-anime-boys-cute-cute-anime-boy-cute-anime-boys-lonely-sad-anime-boy-sad-anime-boys-thumbnail.jpg",
-    "https://w0.peakpx.com/wallpaper/560/1001/HD-wallpaper-anime-boy-anime-anime-boy-anime-boys-demon-depressed-lonely-sad-sad-anime-boy-sad-anime-boys-thumbnail.jpg",
-    "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe"
-    ]
-
-music_list = ["https://aac.saavncdn.com/634/e808fd69b07dd312c532e76e774645e0_160.mp4", "https://aac.saavncdn.com/014/5a1c76a6977a2aab6e5bfcc1adbe029f_160.mp4",
-              "https://aac.saavncdn.com/981/ff704210de1a556e6d59fe7241f94983_160.mp4"]
-
 
 def download(url, filename):
     response = requests.get(url=url, stream=True)
@@ -46,6 +37,7 @@ def download_helper(response,file_name,type,length):
 
 if __name__ == '__main__':
     print("QAt maia")
+    music_list = ["https://aac.saavncdn.com/355/5eed3326fb2aa459d06b5ce97f51f368_160.mp4"]
     with ThreadPoolExecutor(max_workers=3) as e:
             for i in music_list:
                 filename = str(input(f"Enter the file name for {i} = \n"))

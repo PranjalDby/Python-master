@@ -1,12 +1,9 @@
 from __future__ import print_function
-from datetime import date
 from email import encoders
-import json
+from email.message import EmailMessage
 import os.path
-import time
 import requests
 import base64
-import google.auth
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from mimetypes import guess_type as guess_mime_type
@@ -32,8 +29,8 @@ choose_secret = askopenfilename()
 def gmail_auth():
     global service
     creds = None
-    if os.path.exists('@hhsh22ss.json'):
-        creds = Credentials.from_authorized_user_file('@hhsh22ss.json',SCOPES)
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json',SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(request=Request())
@@ -52,7 +49,7 @@ def gmail_auth():
             else:
                 print("No client_secret found...")
 
-        with open('token.json','w') as token:
+        with open('token.json','w+') as token:
             token.write(creds.to_json())
     try:
          # calling the api
@@ -70,28 +67,46 @@ def gmail_auth():
 # request Authenticated id 
 service = gmail_auth()
 
-
 async def add_attachment(message,filename):
     if type(filename) is not type(list):
         print("File selected = ",filename)
         t1 = asyncio.create_task(file_attach_helper(message,filename))
-        await asyncio.sleep(1)
+        await t1
     else:
         t2 = asyncio.create_task(file_attach_helper(message,filename))
-        await asyncio.sleep(1.34)
-
+        await t2
 
 async def file_attach_helper(message,filename):
 
     if type(filename) != type(list):
-        task  = asyncio.create_task(message_attach_multiple(filename,message))
-        await asyncio.sleep(0.982)
+        singleFileTask  = asyncio.create_task(singFileAttach(filename,message))
+        await singleFileTask
     else:
         for files in filename:
-            task  = asyncio.create_task(message_attach_multiple(files,message))
-            await asyncio.sleep(0.982)
+            multipleFileTask  = asyncio.create_task(message_attach_multiple(files,message))
+            await multipleFileTask
     
-    return
+
+async def singFileAttach(filename,message):
+    _,extension = os.path.splitext(filename)
+    if extension != None:
+        getMimeTypeTask = asyncio.create_task(return_guessed_mime_type(filename))
+        await getMimeTypeTask
+        mainType,subType = getMimeTypeTask.result()
+        print(f'''
+            selected file is: ==========
+            maint type ={mainType} sub = {subType}
+            ''')
+        
+        with open(filename,'rb') as openFile:
+            part = MIMEBase(mainType,subType)
+            part.set_payload(openFile.read())
+            part.add_header('Content-Disposition',"attachments; filename= %s" % os.path.basename(str(filename)))
+            encoders.encode_base64(part)
+            message.attach(part)
+
+    else:
+        print("File Format is Not Supported.")
 
 async def message_attach_multiple(filename,message):
     ext_file = {}
@@ -102,7 +117,7 @@ async def message_attach_multiple(filename,message):
         extension_list.insert(count,extension)
         ext_file[extension_list[count]] = _
         task_type = asyncio.create_task(return_guessed_mime_type(filename))
-        await asyncio.sleep(0.3)
+        await task_type
         mt_,sub = task_type.result()
         print(f'''
                 selected file is: ==========
@@ -136,50 +151,94 @@ async def return_guessed_mime_type(file_name):
 
     return [mtype,sub]
 
-async def create_body(message_entry,destination,subject):
+__sameAttachment = False
+message = MIMEMultipart()
+async def create_body(message_entry,destination,subject,no_usr):
+    global __sameAttachment
+    attachment  = 'no'
     attachment = str(input('Do you Want to Add Attachemnt: yes or no: ').lower())
-    message = None
-    if(attachment == 'yes'):
-        print('Here an attachments...')
-        message = MIMEMultipart()
-        message.attach(MIMEText(message_entry))
-        message['To'] = destination
-        message['From'] = 'pranjalorg11@gmail.com'
-        message['Subject'] = subject or "HELLO"
-        if int(input("want to select multiple files: 1 - YES: ")) == 1:
-            files = askopenfiles('r')
-            str1 = []
-            for i in files:
-                str1.append(i.name)
-            for i in str1:
-                task  = asyncio.create_task(add_attachment(message,i))
-                await asyncio.sleep(.89)
+    if __sameAttachment == False and attachment == 'yes':
+        if no_usr > 1:
+            is_same = str(input('Do you Want to send this attachments to all users[yes][no]: ')).lower()
+            __sameAttachment = True if is_same == 'yes' else False
 
-        else:
-            files  = askopenfilename()
-            task  = asyncio.create_task(add_attachment(message,files))
-            await asyncio.sleep(0.54)
+    if(attachment == 'yes'):
+        if  message.get_filename() == None:
+            print(message.get_filename())
+            t3 = asyncio.create_task(prepareMessage(message,message_entry,destination,subject))
+            await t3
+            no_usr -=1
 
     elif attachment == 'no':
-        message = MIMEText(message_entry)
         message['To'] = destination
         message['From'] = 'pranjalorg11@gmail.com'
         message['Subject'] = subject
-    
-    return {
+        message.attach(MIMEText(message_entry))
+
+    structure ={
          'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()
     }
+        
+    return structure
 
+async def prepareMessage(message,message_entry,destination,subject):
+    message.attach(MIMEText(message_entry))
+    message['To'] = destination
+    message['From'] = 'pranjalorg11@gmail.com'
+    message['Subject'] = subject or "Auto-Generated"
+    if int(input("want to select multiple files: 1 - YES: ")) == 1:
+        files = askopenfiles('r')
+        str1 = []
+        for i in files:
+            str1.append(i.name)
+        for i in str1:
+            t2 =  asyncio.create_task(add_attachment(message,i))
+            await t2
+        
+    else:
+        files  = askopenfilename()
+        task  = asyncio.create_task(add_attachment(message,files))
+        await task
+        
+# SameToAll = False
+prev_mess = ""
+prev_sub = ""
+SameToAll = False
+async def send_email(des="",no_usr=1):
+    print('---------------------------CALLED SEND_EMAIL()-------------------------------------')
+    global prev_sub,prev_mess,SameToAll,message
 
-async def send_email(des=None):
-    if des == None:
+    if des == "":
         des = str(input('Enter the Destination: '))
     
     print("Message To :{}".format(des))
-    mess = str(input('Enter the message: '))
-    sub =str(input('Enter the Subject: '))
-    if mess is not None and des is not None or sub is not None:
-        res  = await create_body(mess,des,sub)
+    if no_usr > 1 and not SameToAll:
+        np = str(input('do you want the same message for every other people: ')).lower()
+        if np == 'yes':
+            SameToAll = True
+        else:
+            SameToAll = False
+    
+    if SameToAll and prev_mess == "" or prev_sub == "":
+        mess = str(input('Enter your Message: '))
+        prev_mess = mess
+        sub = str(input('Enter the Subject: '))
+        prev_sub = mess
+        
+    elif SameToAll and prev_mess != "":
+        mess = prev_mess
+        sub = prev_sub
+
+    else:
+        message = MIMEMultipart()
+        mess = str(input('Enter your Message: '))
+        sub = str(input('Enter the Subject: '))
+
+    if mess != None and des != None:
+        res_task  =  asyncio.create_task(create_body(mess,des,sub,no_usr))
+        await res_task
+        if res_task.done():
+            res = res_task.result()
         try:
             return service.users().messages().send(
             userId='me',
@@ -205,28 +264,27 @@ async def main():
         1> Send to multiple user
         2> Send to single user\n
         '''))
-        print(opt1)
-
         if opt1 == 1:
             email_liss = []
             if len(email_liss) == 0:
                 user = "".join(str(input('Enter The Email Addresses: ')))
                 print(user)
-                email_liss = user.split(",")
+                email_liss = user.split(" ")
                 
             for j in email_liss:
-                task1 = asyncio.create_task(send_email(j))
-                await asyncio.sleep(0.88)
-                
-            print("😊 send Successfully....................")
-
+                task1 = asyncio.create_task(send_email(j,len(email_liss)))
+                await task1
+            
         else:
+            print('-----------------------------------FOR SINGLE USER---------------------------------------')
             await send_email()
     except HttpError as e:
         print("Http Error at line 206")
     except requests.exceptions.JSONDecodeError as e2:
         print("Json File or Something..")
-
+    
+    except TypeError as e:
+        print('Error')
     else:
         print("🥵 send Successfully")
 
