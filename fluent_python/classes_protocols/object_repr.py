@@ -128,19 +128,120 @@ class Pizza:
     """
     @classmethod
     def mozarrella(cls):
-        return cls(['mozzarella','tomatoes'])
+        return cls(['mozzarella','tomatoes'],34.2)
     
     @classmethod
     def proscuitto(cls):
-        return cls(['mozzarella','tomatoes','ham'])
+        return cls(['mozzarella','tomatoes','ham'],25.3)
     
     #staticmethod
     def circle_area(r):
         return math.pi * r**2
 
-
+ss = Pizza.mozarrella()
+print(ss)
 #  ------------------------------------ Formated Displays ------------------------------------
 """
 the f-string, the format() built-in function, and the str.format() method delegate the actual formmating to each type by calling their .__format__(format_spec) method.
+1.The second argument in format(my_obj,format_spec), or
+2.whatever appears after the colon in replacement field delimited with {} inside
+an f-string or the fmt in the fmt.str.format()
 """
 # example:-
+
+brl = 1 / 4.82 
+print(brl)
+formatted = format(brl,'0.4f')
+print(formatted)
+# second 
+print("1 BRL = {rate:0.2f} USD".format(rate = brl))
+# above formatting specifier is '0.2f'.The rate part in the replacement field is not part of the formatting specifier. it determines which keyword argument of .format() goes into that field
+
+# third
+print(f'1 USD = {1 / brl:0.2f} BRL')
+# again, the Specifier is '0.2f'.the 1 / brl expression is not part of it
+# ----------------------------------- formatting specification mini language --------------------------------------
+
+print("Hello {}".format('pranjal','>'))
+
+# old style string formatting (% formatter)
+print('Hello Mr. %s'%'Bob')
+# %x formatter to convert int value to hexadecimal value
+errnor = 536382929
+print('Error is %x'%errnor)
+
+class ID:
+    # attributes
+    def __init__(self,name:str,ssn:str):
+        self.name = name
+        self.SSN = ssn
+
+    @classmethod
+    def getPersistentCard(cls):
+        return cls('Pranjal','3ZG12H22')
+    
+    def __str__(self) -> str:
+        return f"CARD:\nName:{self.name},\nSSN:{self.SSN}"
+    
+    def __repr__(self) -> str:
+        return f"CARD:\nName:{self.name},\nSSN:{self.SSN}"
+
+# str.format()
+names = {"name":'Pranjal',"weight":93.2,"height":'6.2ft'}
+
+citizen = {"SSN":33422,"Gender":'MALE','AGE':20}
+
+"""
+Format string Contain "replacement fields" surrounded by curly braces {}. Anything that not contained inside the braces are considerd as literal text, which is copied unchanged to the output
+replacement field = "{" [field_name] ["!" conversion] [":" format_spec] "}".
+
+in less formal terms, the replacement field can start with field_name that specifies the object whose value is to be formatted and inserted into the output instead of replacement field.
+after :(colon) a format_spec is specified.
+
+Three Conversion flags are currently supported '!s' which calls str(), '!r' calls repr() and '!a' calls ascii()
+The Conversion field causes type coercion (generally it is typecasting by passing a variable of other type to the function whose nams is identical to the desired type) before formmating.
+
+format_spec field contains a specification of how the value should be presented,
+including such as field width,alignment,padding,decimal precesion and so on.
+
+A format_spec field can also include nested replacement fields within it. These nested replacement fields may contain a field name, conversion flag and format specification, but deeper nesting is not allowed. The replacement fields within the format_spec are substituted before the format_spec string is interpreted. This allows the formatting of a value to be dynamically specified.
+
+--------------- general form of standard format specifier          ---------------------------------------------
+
+format_spec     ::=  [[fill]align][sign]["z"]["#"]["0"][width][grouping_option]["." precision][type]
+fill            ::=  <any character>
+align           ::=  "<" | ">" | "=" | "^"
+sign            ::=  "+" | "-" | " "
+width           ::=  digit+
+grouping_option ::=  "_" | ","
+precision       ::=  digit+
+type            ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+-----------------------------------------------------------------------------------------------
+Option
+
+Meaning
+
+'<'
+
+Forces the field to be left-aligned within the available space (this is the default for most objects).
+
+'>'
+
+Forces the field to be right-aligned within the available space (this is the default for numbers).
+
+'='
+
+Forces the padding to be placed after the sign (if any) but before the digits. This is used for printing fields in the form ‘+000000120’. This alignment option is only valid for numeric types. It becomes the default for numbers when ‘0’ immediately precedes the field width.
+
+'^'
+
+Forces the field to be centered within the available space.
+"""
+print(ID.getPersistentCard())
+id = ID('Harnoor','G11HTRUSA33')
+print("Printing ID{:e} Agustus".format(8334.423))
+
+# Accessing arguments by positons
+
+

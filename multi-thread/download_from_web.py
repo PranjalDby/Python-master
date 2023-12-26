@@ -37,7 +37,7 @@ def download_helper(response,file_name,type,length):
 
 if __name__ == '__main__':
     print("QAt maia")
-    music_list = ["https://aac.saavncdn.com/355/5eed3326fb2aa459d06b5ce97f51f368_160.mp4"]
+    music_list = ["https://www.slideshare.net/Hareem_syed/man-made-disasters-29200696.p"]
     with ThreadPoolExecutor(max_workers=3) as e:
             for i in music_list:
                 filename = str(input(f"Enter the file name for {i} = \n"))

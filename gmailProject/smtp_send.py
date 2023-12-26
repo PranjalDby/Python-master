@@ -1,6 +1,5 @@
 from __future__ import print_function
 from email import encoders
-from email.message import EmailMessage
 import os.path
 import requests
 import base64
@@ -41,7 +40,7 @@ def gmail_auth():
                             choose_secret,
                             SCOPES
                         )
-                    creds = flow.run_local_server(port=0)
+                    creds = flow.run_local_server(port=5050)
                 
                 except Exception as e:
                     print("Some Error at line 46")
@@ -156,7 +155,9 @@ message = MIMEMultipart()
 async def create_body(message_entry,destination,subject,no_usr):
     global __sameAttachment
     attachment  = 'no'
-    attachment = str(input('Do you Want to Add Attachemnt: yes or no: ').lower())
+    if not __sameAttachment:
+        attachment = str(input('Do you Want to Add Attachemnt: yes or no: ').lower())
+
     if __sameAttachment == False and attachment == 'yes':
         if no_usr > 1:
             is_same = str(input('Do you Want to send this attachments to all users[yes][no]: ')).lower()
@@ -173,13 +174,10 @@ async def create_body(message_entry,destination,subject,no_usr):
         message['To'] = destination
         message['From'] = 'pranjalorg11@gmail.com'
         message['Subject'] = subject
-        message.attach(MIMEText(message_entry))
 
-    structure ={
-         'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()
+    return {
+        'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()
     }
-        
-    return structure
 
 async def prepareMessage(message,message_entry,destination,subject):
     message.attach(MIMEText(message_entry))
@@ -193,18 +191,19 @@ async def prepareMessage(message,message_entry,destination,subject):
             str1.append(i.name)
         for i in str1:
             t2 =  asyncio.create_task(add_attachment(message,i))
-            await t2
+            await asyncio.sleep(0.5)
         
     else:
         files  = askopenfilename()
         task  = asyncio.create_task(add_attachment(message,files))
-        await task
+        await asyncio.sleep(0.5)
         
 # SameToAll = False
 prev_mess = ""
 prev_sub = ""
 SameToAll = False
 async def send_email(des="",no_usr=1):
+    global __sameAttachment
     print('---------------------------CALLED SEND_EMAIL()-------------------------------------')
     global prev_sub,prev_mess,SameToAll,message
 
@@ -216,8 +215,10 @@ async def send_email(des="",no_usr=1):
         np = str(input('do you want the same message for every other people: ')).lower()
         if np == 'yes':
             SameToAll = True
+            __sameAttachment = True
         else:
             SameToAll = False
+            __sameAttachment = False
     
     if SameToAll and prev_mess == "" or prev_sub == "":
         mess = str(input('Enter your Message: '))
@@ -226,6 +227,7 @@ async def send_email(des="",no_usr=1):
         prev_sub = mess
         
     elif SameToAll and prev_mess != "":
+        print(message.raw_items())
         mess = prev_mess
         sub = prev_sub
 
@@ -248,7 +250,7 @@ async def send_email(des="",no_usr=1):
         except TimeoutError as e:
             print("Timeout...")
     else:
-        raise HttpError
+        raise HttpError('Http Error at Send Email')
     
 def send_to_multiple():
     file_list =[]
@@ -273,7 +275,7 @@ async def main():
                 
             for j in email_liss:
                 task1 = asyncio.create_task(send_email(j,len(email_liss)))
-                await task1
+                await asyncio.sleep(0.43)
             
         else:
             print('-----------------------------------FOR SINGLE USER---------------------------------------')

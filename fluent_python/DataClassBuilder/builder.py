@@ -90,4 +90,3 @@ Card.over_all_rank = spades_high
 lowest_card = Card('2','clubs')
 highest_card = Card('A','spades')
 print(highest_card.over_all_rank())
-

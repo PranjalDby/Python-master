@@ -1,0 +1,6 @@
+{
+    "python.REPL.enableREPLSmartSend": false,
+    "python.analysis.extraPaths": [
+        "./fluent_python/func_object/Decorators_closures"
+    ]
+}

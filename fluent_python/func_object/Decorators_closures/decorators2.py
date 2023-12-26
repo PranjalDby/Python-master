@@ -1,8 +1,6 @@
 # implementing a single decorator
-
 import functools
 import time
-
 def clock(func):
     def clocked(*args):
         print("Clocked Called")

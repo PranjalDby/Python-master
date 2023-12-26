@@ -73,18 +73,18 @@ Regular expression patterns have a way to include "flags" which change how the p
 
 # greedy vs non-greedy
 
-with open('python_extras/regex/baby1990.html') as file:
-    content = file.read()
+# with open('python_extras/regex/baby1990.html') as file:
+#     content = file.read()
 
-    year = re.findall(r'( \d\d\d\d)',content)
-    rank = re.findall(r'<\w.?>(\d+)',content)
-    name = re.findall(r'\d.*<\w.*>(\w+)',content)
-    name = sorted(name)
-    print(len(rank))
-    print(len(name))
-    combined = [] 
-    for i in range(len(name)):
-        if i < len(rank):
-            name[i] = name[i] +" "+ rank[i]
+#     year = re.findall(r'( \d\d\d\d)',content)
+#     rank = re.findall(r'<\w.?>(\d+)',content)
+#     name = re.findall(r'\d.*<\w.*>(\w+)',content)
+#     name = sorted(name)
+#     print(len(rank))
+#     print(len(name))
+#     combined = [] 
+#     for i in range(len(name)):
+#         if i < len(rank):
+#             name[i] = name[i] +" "+ rank[i]
 
-    print(name)
+#     print(name)
