@@ -18,7 +18,6 @@ from tkinter.filedialog import askopenfiles
 from tkinter.filedialog import askopenfilename
 import asyncio
 SCOPES = ['https://mail.google.com/']
-our_email = 'pranjalorg11@gmail.com'
 service = None
 tk = tkinter.Tk()
 tk.withdraw()
