@@ -155,7 +155,7 @@ class GmailMain:
             
             text = MIMEText(message,"plain")
             message_obj['To'] = multiple_users
-            message_obj['From'] = "pranjalorg11@gmail.com"
+            message_obj['From'] = "Enter Appl"
             message_obj['Subject'] = subject
             message_obj.attach(text)
             if Attachment:
