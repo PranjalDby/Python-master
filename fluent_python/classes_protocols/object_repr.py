@@ -1,62 +1,61 @@
 # A Vector2D class we see in previous Chapter,embrace with different methods
 import array,math
-class Vector2D:
-    typecode = 'd'
-    def __init__(self,x,y):
-        self.x = float(x)
-        self.y = float(y)
+# class Vector2D:
+#     typecode = 'd'
+#     def __init__(self,x,y):
+#         self.x = float(x)
+#         self.y = float(y)
+    
+#     def __iter__(self):
+#         return (i for i in (self.x,self.y))
+    
+#     def __repr__(self) -> str:
+#         class_name = type(self).__name__
+#         return '{}({!r},{!r})'.format(class_name,*self)
+    
+#     def __str__(self) -> str:
+#         return "Called __str__ "+str(tuple(self))
     
 
-    def __iter__(self):
-        return (i for i in (self.x,self.y))
+#     def __bytes__(self):
+#         return (bytes([ord(self.typecode)]) + 
+#                 bytes(array.array(self.typecode,self)))
     
-    def __repr__(self) -> str:
-        class_name = type(self).__name__
-        return '{}({!r},{!r})'.format(class_name,*self)
+#     def __eq__(self, __value: object) -> bool:
+#         return tuple(self) == tuple(__value)
     
-    def __str__(self) -> str:
-        return "Called __str__ "+str(tuple(self))
+#     def __abs__(self):
+#         return math.hypot(self.x,self.y)
     
-
-    def __bytes__(self):
-        return (bytes([ord(self.typecode)]) + 
-                bytes(array.array(self.typecode,self)))
-    
-    def __eq__(self, __value: object) -> bool:
-        return tuple(self) == tuple(__value)
-    
-    def __abs__(self):
-        return math.hypot(self.x,self.y)
-    
-    # A_c1 
-    @classmethod
-    def frombytes(cls,octets):
-        typecode = chr(octets[0])
-        print(typecode)
-        memv = memoryview(octets[1:]).cast(typecode)
-        # changing the value
-        return cls(*memv) 
+#     # A_c1 
+#     @classmethod
+#     def frombytes(cls,octets):
+#         typecode = chr(octets[0])
+#         print(typecode)
+#         memv = memoryview(octets[1:]).cast(typecode)
+#         # changing the value
+#         return cls(*memv) 
 
 
 # An alternative Constructor:
 # We have to still create a method that rebuilt our Vector2D from bytes
 # Verifying each special methods
-v1 = Vector2D(3,4)
-x,y = v1 # this call __iter__() method,basically unpacking
-print(y)
-v1_clone = eval((repr(v1)))
-print(v1 == v1_clone) # comparison __eq__
-octets = bytes(v1) #here it uses the __bytes__ methods to produce a binary representation
-recreated_vector = v1.frombytes(octets)
-print(type(recreated_vector))
+# v1 = Vector2D(3,4)
+# x,y = v1 # this call __iter__() method,basically unpacking
+# print(y)
+# v1_clone = eval((repr(v1)))
+# print(v1 == v1_clone) # comparison
+# octets = bytes(v1) #here it uses the __bytes__ methods to produce a binary representation
+# recreated_vector = v1.frombytes(octets)
+# print(type(recreated_vector))
 
 # memoryview() is applied only to that objects that supports buffer protocol.buit-in objects that support buffer protocol are bytes,bytearray
-random_byte_arr = bytearray('ABC','utf-8')
-print(random_byte_arr)
-memv = memoryview(random_byte_arr)
-memv[0] = 68
-print(memv.tolist()) 
-print(random_byte_arr)
+# random_byte_arr = bytearray('ABC','utf-8')
+# print(random_byte_arr)
+# memv = memoryview(random_byte_arr)
+# memv[0] = 68
+# print(memv.tolist()) 
+# print(random_byte_arr)
 
 #  ----------------- classmethod Versus staticmethod ------------------------------------------------------------
 
@@ -96,7 +95,7 @@ class Demo2:
     
 
 
-dm1 = Demo2()
+# dm1 = Demo2()
 #manual passing the instance of object instance
 # dm1.instanceMethod(dm1,'Hello Instance Method')
 # calling instanceMethod without creating instance method
@@ -104,11 +103,11 @@ dm1 = Demo2()
 # Demo2().classMethod('MagicShop- Maxce')
 # dm1.staticMethod('staticmethod calling')
 
-demo = Demo()
-ss = demo.klassMeth('pranjal') # it recieves the classname as the first argument
-# proof: (<class '__main__.Demo'>, 'pranjal')
-#invoking our staticmethod which is just a old function745
-normal_meth = demo.statikmethod('pranjal','johnson')
+# demo = Demo()
+# ss = demo.klassMeth('pranjal') # it recieves the classname as the first argument
+# # proof: (<class '__main__.Demo'>, 'pranjal')
+# #invoking our staticmethod which is just a old function745
+# normal_meth = demo.statikmethod('pranjal','johnson')
 
 class Pizza:
     def __init__(self,ingredients,radius):
@@ -138,8 +137,8 @@ class Pizza:
     def circle_area(r):
         return math.pi * r**2
 
-ss = Pizza.mozarrella()
-print(ss)
+# ss = Pizza.mozarrella()
+# print(ss)
 #  ------------------------------------ Formated Displays ------------------------------------
 """
 the f-string, the format() built-in function, and the str.format() method delegate the actual formmating to each type by calling their .__format__(format_spec) method.
@@ -149,26 +148,26 @@ an f-string or the fmt in the fmt.str.format()
 """
 # example:-
 
-brl = 1 / 4.82 
-print(brl)
-formatted = format(brl,'0.4f')
-print(formatted)
-# second 
-print("1 BRL = {rate:0.2f} USD".format(rate = brl))
+# brl = 1 / 4.82 
+# print(brl)
+# formatted = format(brl,'0.4f')
+# print(formatted)
+# # second 
+# print("1 BRL = {rate:0.2f} USD".format(rate = brl))
 # above formatting specifier is '0.2f'.The rate part in the replacement field is not part of the formatting specifier. it determines which keyword argument of .format() goes into that field
 
 # third
-print(f'1 USD = {1 / brl:0.2f} BRL')
-# again, the Specifier is '0.2f'.the 1 / brl expression is not part of it
-# ----------------------------------- formatting specification mini language --------------------------------------
+# print(f'1 USD = {1 / brl:0.2f} BRL')
+# # again, the Specifier is '0.2f'.the 1 / brl expression is not part of it
+# # ----------------------------------- formatting specification mini language --------------------------------------
 
-print("Hello {}".format('pranjal','>'))
+# print("Hello {}".format('pranjal','>'))
 
-# old style string formatting (% formatter)
-print('Hello Mr. %s'%'Bob')
-# %x formatter to convert int value to hexadecimal value
-errnor = 536382929
-print('Error is %x'%errnor)
+# # old style string formatting (% formatter)
+# print('Hello Mr. %s'%'Bob')
+# # %x formatter to convert int value to hexadecimal value
+# errnor = 536382929
+# print('Error is %x'%errnor)
 
 class ID:
     # attributes
@@ -238,10 +237,97 @@ Forces the padding to be placed after the sign (if any) but before the digits. T
 
 Forces the field to be centered within the available space.
 """
-print(ID.getPersistentCard())
-id = ID('Harnoor','G11HTRUSA33')
-print("Printing ID{:e} Agustus".format(8334.423))
+# print(ID.getPersistentCard())
+# id = ID('Harnoor','G11HTRUSA33')
+# print("Printing ID{:e} Agustus".format(8334.423))
 
-# Accessing arguments by positons
 
+# A hashable Vector 2D..........................
+#  To make our Vector2D hashable or immutable we need to implement __hash__ (__eq__ is also required).
+# We need to make our vector instances immutable
+class Vector2DHashable:
+    __match_args__ = ('x','y')
+    typecode = 'd'
+    def __init__(self,x,y):
+        self._x_var = float(x)
+        self.__y = float(y)
+
+    @property
+    def x(self):
+        return self.__x
+
+    @property
+    def y(self):
+        return self.__y
+    
+    def __iter__(self):
+        return (i for i in (self.x,self.y))
+    
+    def __repr__(self) -> str:
+        class_name = type(self).__name__
+        return '{}({!r},{!r})'.format(class_name,*self)
+    
+    def __str__(self) -> str:
+        return "Called __str__ "+str(tuple(self))
+    
+
+    def __bytes__(self):
+        return (bytes([ord(self.typecode)]) + 
+                bytes(array.array(self.typecode,self)))
+    
+    def __eq__(self, __value: object) -> bool:
+        return tuple(self) == tuple(__value)
+    
+    def __abs__(self):
+        return math.hypot(self.x,self.y)
+    
+    # making it hashable
+    def __hash__(self) -> int:
+        return hash((self.x,self.y))
+    
+    @classmethod
+    def frombytes(cls,octets):
+        typecode = chr(octets[0])
+        print(typecode)
+        memv = memoryview(octets[1:]).cast(typecode) # to access the internal data of an object
+        # changing the value
+        return cls(*memv)
+    
+_=2
+v1 = Vector2DHashable(_,0)
+v2 = Vector2DHashable(3.2,5.6)
+
+# print(hash(v1),hash(v2))
+# st = {v1,v2}
+
+# Supporting Positional Pattern Matching ........................................................
+
+def keyword_pattern_matching(v:Vector2DHashable) -> None:
+    match v:
+        case Vector2DHashable(x = 0,y = 0):
+            print(f'{v!r} is null')
+
+        case Vector2DHashable(x = 0):
+            print(f'{v!r} is vertical')
+
+        case Vector2DHashable(y = 0):
+            print(f'{v!r} is horizontal')
+        
+        case Vector2DHashable(x = x,y = y) if x == y:
+            print(f'{v!r} is diagonal')
+
+        case _:
+            print(f'{v!r} is awesome')
+
+
+def positional_pattern(v:Vector2DHashable):
+    match v:
+        case Vector2DHashable(_,0):
+            print(f'{v!r} is horizontal')
+
+
+# positional_pattern(v1)  Before: this will throw an error (TypeError) Vector2DHashable accepts 0 positional sub-patterns
+#  to make this work with positional patterns we need to add a class attribute named __match_args__, listing the instance attributes in the order they will be used for postional pattern matching.
+            
+positional_pattern(v1)
 

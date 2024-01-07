@@ -12,7 +12,7 @@ def download(url, filename):
         download_helper(response,filename,'jpeg',length)
     elif (response.headers.get('Content-Type') == 'audio/mp4'):
         download_helper(response,filename,'mp3',length)
-
+    
     else:
         download_helper(response,filename,'zip',length)
 
@@ -37,7 +37,7 @@ def download_helper(response,file_name,type,length):
 
 if __name__ == '__main__':
     print("QAt maia")
-    music_list = ["https://www.slideshare.net/Hareem_syed/man-made-disasters-29200696.p"]
+    music_list = ["https://github.com/gadote/testbooks/blob/master/Programming%20JavaScript%20Applications%20-%20Eric%20Elliott.pdf"]
     with ThreadPoolExecutor(max_workers=3) as e:
             for i in music_list:
                 filename = str(input(f"Enter the file name for {i} = \n"))
