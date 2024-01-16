@@ -1,4 +1,5 @@
 from __future__ import print_function
+import multiprocessing
 import base64
 from email import encoders
 from email.message import EmailMessage
@@ -8,14 +9,12 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os.path
-import google.auth
 from mimetypes import guess_type as guess_mime_type
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-import zipfile
 from typing import Any
 SCOPES = ["https://mail.google.com/"]
 
@@ -89,11 +88,12 @@ class GmailMain:
         else:
             with open(file, "rb") as fp:
                 self.msg_ = MIMEBase(mtype, subs)
-                self.msg_.set_payload(fp.read())
+                content_file = fp.read()
+                self.msg_.set_payload(content_file)
+                encoders.encode_base64(self.msg_)
 
         filename = os.path.basename(file)
         self.msg_.add_header('Content-Disposition',"attachment",filename = filename)
-        encoders.encode_base64(self.msg_)
         message.attach(self.msg_)
 
         return message
@@ -108,7 +108,6 @@ class GmailMain:
             curr = ""
             for files in self.attachmentFiles:
                 message = self.build_filePart(files,message)
-                print("Multiple file is")
 
         
         return base64.urlsafe_b64encode(message.as_bytes()).decode()
