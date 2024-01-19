@@ -102,32 +102,100 @@ class Myseq:
         return i
     
 
-s = Myseq()
-print(s[1:5:2,7:9:1])
+# s = Myseq()
+# print(s[1:5:2,7:9:1])
 
 
-# Inspecting the attributes of the slice clas
-print(dir(slice))
-print(help(slice.indices))
+# # Inspecting the attributes of the slice clas
+# print(dir(slice))
+# print(help(slice.indices))
 
-# Example----------
-st = "Pranjal"
-print(st[1:4:2])
+# # Example----------
+# st = "Pranjal"
+# print(st[1:4:2])
 
 
 # Improved Vector.__getitem__ implementation
 
+# class VectorMultiDimensional:
+#     typecode = 'd'
+#     def __init__(self,components) -> None:
+#         self._components = array(self.typecode,components) #1
+#     def __iter__(self):
+#         return iter(self._components) #2
+    
+#     def __repr__(self) -> str:
+#         cmpnts = reprlib.repr(self._components)#3
+#         cmpnts = cmpnts[cmpnts.find('['):-1]#4
+#         return f'Vector({cmpnts})'
+    
+#     def __str__(self)->str:
+#         return str(tuple(self))
+    
+#     def __bytes__(self):
+#         return (bytes([ord(self.typecode)]) + bytes(self._components))#5
+    
+#     def __eq__(self,other):
+#         return tuple(self) == tuple(other)
+    
+#     def __abs__(self):
+#         return math.hypot(*self)
+    
+#     def __bool__(self):
+#         return bool(abs(self))
+    
+#     # Making it - a Sliceable Sequences
+
+#     def __getitem__(self,key):
+#         if isinstance(key,slice):
+#             print('its a slice object')
+#             cls = type(self)
+#             return cls(self._components[key])
+
+#         index = operator.index(key)
+#         return self._components[index]
+    
+
+    
+#     def __len__(self)->int:
+#         return len(self._components)
+    
+#     @classmethod
+#     def frombytes(cls,octets):
+#         typcode = chr(octets[0])
+#         memv = memoryview(octets[1:]).cast(typcode)
+#         cls(memv)
+
+
+# v1 = VectorMultiDimensional(range(10))
+# print(type(v1[-1])) # an integer index retreives just one component value as a float.
+
+# print(v1[1:6]) # This slice index creates a new VectorMultiDimensional.
+
+# print(v1[-1:]) # A slice of len ==1  also creates VetcorMultiDimensional.
+
+# print(v1[1,2]) # VectorMultiDimesional does not support multidimensional indexing . it throws typeError
+
+
+
+# --------------------------------------------- Dynamic Attribute Access --         ----------------------------------------
+
+ 
 class VectorMultiDimensional:
+    # Positional pattern matching
+
+    __match_args__ = ('x','y','z','t')
+
     typecode = 'd'
     def __init__(self,components) -> None:
-        self._components = array(self.typecode,components) #1
+        self._components = array(self.typecode,components)
     def __iter__(self):
         return iter(self._components) #2
     
     def __repr__(self) -> str:
-        cmpnts = reprlib.repr(self._components)#3
-        cmpnts = cmpnts[cmpnts.find('['):-1]#4
-        return f'Vector({cmpnts})'
+        cmpnts = reprlib.repr(self._components)
+        cmpnts = cmpnts[cmpnts.find('['):-1]
+        return f'VectorMultiDimensional({cmpnts})'
     
     def __str__(self)->str:
         return str(tuple(self))
@@ -143,6 +211,22 @@ class VectorMultiDimensional:
     
     def __bool__(self):
         return bool(abs(self))
+    
+    # implementing __getattr__ special method
+
+    def __getattr__(self,name):
+        cls = type(self)
+        try:
+            pos = cls.__match_args__.index(name)
+        
+        except ValueError:
+            pos = -1
+
+        if 0 <= pos <= len(self._components):
+            return self._components[pos]
+        
+        msg = f'{cls.__name__!r} object has no attribute {name!r}' 
+        raise AttributeError(msg)
     
     # Making it - a Sliceable Sequences
 
@@ -167,12 +251,12 @@ class VectorMultiDimensional:
         cls(memv)
 
 
-v1 = VectorMultiDimensional(range(10))
-# print(type(v1[-1])) # an integer index retreives just one component value as a float.
+v = VectorMultiDimensional(range(5))
 
-# print(v1[1:6]) # This slice index creates a new VectorMultiDimensional.
+print(v)
+print(v.x)
+v.x = 10
+print(v.x)
+print(v[0])
 
-# print(v1[-1:]) # A slice of len ==1  also creates VetcorMultiDimensional.
-
-# print(v1[1,2]) # VectorMultiDimesional does not support multidimensional indexing . it throws typeError
-
+# print(v.d) # Throws AttributeError
