@@ -9,7 +9,7 @@ def find_sums(lists):
         pool.map(cpu_heater,lists)
 
 if __name__ == "__main__":
-    numbers = {5_000_000 + x for x in range(1000)}
+    numbers = {5_000_000 + x for x in range(5000)}
     start_time = timeit.default_timer()
     find_sums(numbers)
     endtime = timeit.default_timer()

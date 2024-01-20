@@ -21,7 +21,7 @@ a Vector constructor call
 # Protocols & duck-typing
 
 import collections
-from typing import NamedTuple, Protocol
+from typing import Any, NamedTuple, Protocol
 Card = collections.namedtuple('Card',['ranks','suits'])
 
 
@@ -240,7 +240,28 @@ class VectorMultiDimensional:
         return self._components[index]
     
 
-    
+    #Implementing __setattr__() to our class
+
+    def __setattr__(self, __name: str, __value: Any) -> None:
+        cls = type(self)
+        if len(__name) == 1:
+            if __name in cls.__match_args__:
+                error = "readonly attribute {attr_name!r}"
+            
+            elif __name.islower():
+                error = "can't set attributes 'a' to 'z' in {cls_name!r}"
+            
+            else:
+                error = ''
+            
+            if error:
+                msg = error.format(cls_name=cls.__name__, attr_name=__name)
+                raise AttributeError(msg)
+            
+        
+        super().__setattr__(__name,__value)
+
+
     def __len__(self)->int:
         return len(self._components)
     
@@ -253,10 +274,9 @@ class VectorMultiDimensional:
 
 v = VectorMultiDimensional(range(5))
 
-print(v)
-print(v.x)
-v.x = 10
-print(v.x)
-print(v[0])
-
 # print(v.d) # Throws AttributeError
+
+# Line 244 Implementing __setattr__()
+
+v.d1 = 50 # Throws AttributeError
+print(v.d1)

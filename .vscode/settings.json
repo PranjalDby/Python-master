@@ -3,5 +3,7 @@
   "python.analysis.extraPaths": [
     "./fluent_python/func_object/Decorators_closures"
   ],
-  "editor.fontFamily": "Cascadia Code"
+  "editor.fontFamily": "Cascadia Code",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.typeCheckingMode": "basic"
 }
