@@ -64,3 +64,4 @@ for i in range(len(prices) ):
 
 print(maximum_subarray(difference,1,len(difference)-1))
 
+print('Testing GPG')
