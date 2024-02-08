@@ -37,7 +37,7 @@ def download_helper(response,file_name,type,length):
 
 if __name__ == '__main__':
     print("QAt maia")
-    music_list = ["https://github.com/gadote/testbooks/blob/master/Programming%20JavaScript%20Applications%20-%20Eric%20Elliott.pdf"]
+    music_list = ["https://aac.saavncdn.com/562/8bdbbde2010515e338dccd6b2d4d3e08_160.mp4"]
     with ThreadPoolExecutor(max_workers=3) as e:
             for i in music_list:
                 filename = str(input(f"Enter the file name for {i} = \n"))

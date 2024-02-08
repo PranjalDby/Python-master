@@ -272,7 +272,7 @@ class VectorMultiDimensional:
         cls(memv)
 
 
-v = VectorMultiDimensional(range(5))
+v = VectorMultiDimensional(range(1000))
 
 # print(v.d) # Throws AttributeError
 

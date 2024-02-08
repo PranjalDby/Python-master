@@ -1,6 +1,5 @@
 import multiprocessing
 import timeit
-from concurrent.futures import ThreadPoolExecutor
 def cpu_heater(number):
     return sum(i * i for i in range(number))
 
