@@ -37,7 +37,8 @@ def download_helper(response,file_name,type,length):
 
 if __name__ == '__main__':
     print("QAt maia")
-    music_list = ["https://aac.saavncdn.com/562/8bdbbde2010515e338dccd6b2d4d3e08_160.mp4"]
+    music_list = ["https://aac.saavncdn.com/713/fc91c79b27d14206d9f9f08b2a289519_160.mp4",
+                  "https://aac.saavncdn.com/591/0e32e462747a3b7b4378e5ef972bc3bd_96.mp4","https://aac.saavncdn.com/896/ad19c4a75775ccdef32905de23fc10c5_96.mp4"]
     with ThreadPoolExecutor(max_workers=3) as e:
             for i in music_list:
                 filename = str(input(f"Enter the file name for {i} = \n"))
