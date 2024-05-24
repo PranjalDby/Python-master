@@ -1,0 +1,58 @@
+Disassembly of __add__:
+ 46           0 RESUME                   0
+
+ 47           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (ob1)
+             14 LOAD_FAST                1 (ob1)
+             16 LOAD_ATTR                0 (ob1)
+             26 BINARY_OP                0 (+)
+             30 RETURN_VALUE
+
+Disassembly of __init__:
+ 41           0 RESUME                   0
+
+ 42           2 LOAD_FAST                1 (obj)
+              4 LOAD_FAST                0 (self)
+              6 STORE_ATTR               0 (ob1)
+             16 LOAD_CONST               0 (None)
+             18 RETURN_VALUE
+
+Disassembly of __le__:
+ 58           0 RESUME                   0
+
+ 59           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (ob1)
+             14 LOAD_FAST                1 (other)
+             16 LOAD_ATTR                0 (ob1)
+             26 COMPARE_OP               1 (<=)
+             32 RETURN_VALUE
+
+Disassembly of __lt__:
+ 54           0 RESUME                   0
+
+ 55           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (ob1)
+             14 LOAD_FAST                1 (other)
+             16 LOAD_ATTR                0 (ob1)
+             26 COMPARE_OP               0 (<)
+             32 RETURN_VALUE
+
+Disassembly of __neg__:
+ 61           0 RESUME                   0
+
+ 62           2 LOAD_GLOBAL              1 (NULL + OperatorOverloading)
+             14 LOAD_FAST                0 (self)
+             16 LOAD_ATTR                1 (ob1)
+             26 LOAD_CONST               1 (1)
+             28 BINARY_OP               10 (-)
+             32 PRECALL                  1
+             36 CALL                     1
+             46 RETURN_VALUE
+
+Disassembly of __str__:
+ 49           0 RESUME                   0
+
+ 50           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (ob1)
+             14 RETURN_VALUE
+

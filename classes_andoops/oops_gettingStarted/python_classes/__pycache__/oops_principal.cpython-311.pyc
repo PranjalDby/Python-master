@@ -1,0 +1,4 @@
+  0           0 RESUME                   0
+
+  1           2 LOAD_NAME                0 (__main__)
+              4 RETURN_VALUE
