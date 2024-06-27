@@ -53,8 +53,7 @@ def whisper(text):
     def speak_also(t):
         return t.lower() + "Speaking ... 😊😊😊😊 "
     
-    return f"{speak_also(text)
-              } Don't Speak Just WHisper shuuuuh.....🤫🤫🤫🤫🤫🤫"
+    return f"{speak_also(text)}Don't Speak Just WHisper shuuuuh.....🤫🤫🤫🤫🤫🤫"
 
 
 
@@ -175,7 +174,6 @@ def adder(a,b):
     """ adder function adds two values"""
     return a + b
 
-ad_10_12 = adder(10,12)
 
 # print(ad_10_12)
 # print(help(adder)) #it returns name of inner function wrapper instead of its name
@@ -279,30 +277,6 @@ def create_random_array(size):
         return __temp
     
     return [0]
-
-registery = []
-
-# decorator funtions
-def register(func):
-    print(f'running register ({func})')
-    registery.append(func)
-
-    return func
-
-import unicodedata
-
-@register
-def f1():
-    print(f'running f1() {U'CAPITAL A'}')
-
-
-@register
-def f2():
-    print(f'running f2() {U'F60779'}')
-
-
-def f3():
-    print(f'running f3() {U'F60760'}')
 
 
 
@@ -436,18 +410,38 @@ class Circle:
     @staticmethod
     def pi():
         return 3.14159
-    
+
+
+# ------- Nesting Decorators -----------------------------------------------------------
+
+def do_twice(func):
+    @functools.wraps(func)
+    def wrapper(*args,**kwargs):
+        for i in range(2):
+            res = func(*args,**kwargs)
+        
+    return wrapper
+
+@debugger_deco
+@do_twice
+def greet(name):
+    print(f'Hello {name}')
+
 if __name__ == "__main__":
     # take_off_10s("launch")
-    print(PLUGINS)
-    print(random_call("Aliceeeeee"))
+    # print(PLUGINS)
+    # print(random_call("Aliceeeeee"))
     
-    circle_radii_20 = Circle(20)
-    print(circle_radii_20.AREA) # this property is immutable, since it is property without .setter() method
-    # circle_radii_20.AREA = 1623.33; raises AttributeError: property 'AREA' of 'Circle' object has no setter
+    # circle_radii_20 = Circle(20)
+    # print(circle_radii_20.AREA) # this property is immutable, since it is property without .setter() method
+    # # circle_radii_20.AREA = 1623.33; raises AttributeError: property 'AREA' of 'Circle' object has no setter
 
-    print(circle_radii_20.radius)# we can set the value of radius property since it has setter method associated with it.
-    circle_radii_20.radius = 30
-    print("After Changing the value of radius property = ",circle_radii_20.radius)
+    # print(circle_radii_20.radius)# we can set the value of radius property since it has setter method associated with it.
+    # circle_radii_20.radius = 30
+    # print("After Changing the value of radius property = ",circle_radii_20.radius)
 
-print("Adding For commit")
+    greet("Pranjal Dubey")
+
+
+
+

@@ -33,9 +33,11 @@ def lex(expreesion):
 
 pprint(lex('3*a + 2*b'))
 
-import instaviz
-def example():
-    a = 1
-    b = a + 1 * 2
-    return b
-instaviz.show(example)
+# import instaviz
+# def example():
+#     a = 1
+#     b = a + 1 * 2
+#     return b
+# instaviz.show(example)
+import ast
+print(ast.__doc__)
