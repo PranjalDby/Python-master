@@ -40,7 +40,7 @@ if __name__ == '__main__':
     music_list = ["https://aac.saavncdn.com/634/e808fd69b07dd312c532e76e774645e0_160.mp4", "https://aac.saavncdn.com/014/5a1c76a6977a2aab6e5bfcc1adbe029f_160.mp4",
               "https://aac.saavncdn.com/981/ff704210de1a556e6d59fe7241f94983_160.mp4"]
     
-    downlaods_panda =["https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_160.mp4"]
+    downlaods_panda =["https://media.vlipsy.com/vlips/pXAmt9Lf/480p.mp4"]
     with ThreadPoolExecutor(max_workers=3) as e:
             for i in downlaods_panda:
                 filename = str(input(f"Enter the file name for {i} = \n"))

@@ -1,9 +1,11 @@
 import platform 
 def executeInfo():
     mysys = platform.uname()
-    print(f'System: {mysys.system}')
-    print(f'Node Name: {mysys.node}')
-    print(f'Release Ver: {mysys.release}')
-    print(f'System Ver: {mysys.version}')
-    print(f'Machine: {mysys.machine}')
-    print(f'Processor: {mysys.processor}')
+    fields_name = mysys._fields
+
+    for i in range(len(fields_name)):
+        print(f'{fields_name[i]}:{mysys.__getattribute__(fields_name[i])}')
+
+
+if __name__ == "__main__":
+    executeInfo()

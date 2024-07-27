@@ -1,5 +1,6 @@
 # ---------------------- defining getter and setters for class ----------------------------------
 
+from time import sleep
 import functools
 from typing import Any, Callable
 
@@ -96,7 +97,9 @@ class our_property:
             
     def __get__(self, instance, owner):
         """Get the attribute value"""
+        print("__get__ is called")
         if instance is None:
+            print("Instance is None")
             return self
         if self.fget is None:
             raise AttributeError("Can't get attribute")
@@ -116,58 +119,74 @@ class our_property:
         self.fdel(instance)
 
     def getter(self,fget):
+        print("What is type self in getter in our custom property = ",type(self) )
+
         return type(self)(fget,self.fset,self.fdel,self.doc)
     
     def setter(self,fset):
+        print("What is type self in setter in our custom property = ",type(self))
         return type(self)(self.fget,fset,self.fdel,self.doc)
     
     def deleter(self,fdel):
         return type(self)(self.fget,self.fset,fdel,self.doc)
     
     
-    
-        
+
 
 class Rectangle:
     def __init__(self, l, b):
-        self.__length = l
-        self.__breadth = b
+        self._length = l
+        self._breadth = b
 
 
     @our_property
     def length(self):
         """length property"""
-        return self.__length
+        return "Dummy"
+    
+    @length.getter
+    def length(self):
+        print("Haa.... 😊😊👌👌 Actual Getter.....")
+        return self._length
 
     @length.setter
     def length(self, value):
-        self.__length = value
+        self._length = value
 
     @our_property
     def breadth(self):
         """breadth property"""
-        return self.__breadth
+        return self._breadth
 
     @breadth.setter
     def breadth(self, value):
-        self.__breadth = value
+        self._breadth = value
+
+    # def __set_length(self,val):
+    #     self.__length = val
+    # length = our_property(lambda self: self.__length,__set_length)
 
 
-circle  = CicleRedefined(23.2)
-print("value of radius = ",circle.radius)
-circle.radius = 341.23
-print("value of setting the new value = ",circle.radius)
-# inspecting the property object
-print(circle)
+
+
+# circle  = CicleRedefined(23.2)
+# print("value of radius = ",circle.radius)
+# circle.radius = 341.23
+# print("value of setting the new value = ",circle.radius)
+# # inspecting the property object
+# print(circle)
 
 # custom property
 
 recx = Rectangle(23.2,33.3)
-print(type(recx)(10.2,45.2))
-print(recx.length)
-print(recx.breadth)
 
-recx.breadth = 302.3
+
+print("RUUFVSDFBIKOL;KKBNIKL -------------------------------------")
+recx.length = 3423.22
+print("lenght = ",recx.length,recx._breadth)
+
+print("Breadth = ",recx.breadth)
+
 # print(type(recx))
 
 
@@ -391,5 +410,212 @@ class Product:
         return f"${self.__price:.2f}"
     
 
-pr =Product("Car",85000.3421)
+pr = Product("Car",85000.3421)
 print(pr.__dir__())
+
+
+# ----------------------------------------------------- Caching Computed attributes ----------------------------------------------------------------
+
+class Circle:
+    def __init__(self,radius):
+        self.radius = radius
+        self.__diameter = None # our cached property
+
+    @property
+    def radius(self):
+        return self.__radius
+    
+    @radius.setter
+    def radius(self,va):
+        self.__radius = va
+        self.__diameter = None
+
+    @property
+    def diameter(self):
+        if self.__diameter is None:
+            sleep(0.5) # Simulate a costly computation
+            self.__diameter = self.radius * 2
+        
+        return self.__diameter
+    
+
+    """Warning!. even if this implementation of Circle caches computed attribute diameter,it has the drawback that
+    if you ever change the value of .radius, then diameter won't return a correct value.
+    to solve this we have two ways:
+    1. we have to change the diameter every time user changes it radius only.
+
+    2. another option to create a cached properties is to use functools.cached_property()
+    """
+
+rr = Circle(23.2)
+print(rr.diameter)
+rr.radius = 45.2
+print(rr.diameter)
+
+class CircleWithCaching:
+    def __init__(self,radius) -> None:
+        self.radius = radius
+
+    
+    @functools.cached_property
+    def diameter(self):
+        sleep(0.5)
+        return self.radius * 2
+
+
+circle_modified = CircleWithCaching(3.2)
+
+print(circle_modified.radius)
+
+print(circle_modified.diameter)
+
+circle_modified.radius = 4.5
+print(circle_modified.diameter)
+
+# ----------------------------------- Logging Attribute Access And Mutation --------------------------------------------------
+import logging
+
+logging.basicConfig(
+    format="%(asctime)s:%(message)s",
+    level=logging.INFO,
+    datefmt="%H:%M:%S"
+)
+
+class CircleLogged:
+    def __init__(self,radius):
+        self.__msg = '"radius" was %s.Current Value: %s'
+        self.radius = radius
+
+    @property
+    def radius(self):
+        """The Radius property."""
+        logging.info(self.__msg % ("accessed",self.__radius))
+
+        return self.__radius
+    
+
+    @radius.setter
+    def radius(self,value):
+        try:
+            self.__radius = float(value)
+            logging.info(self.__msg % ("mutated or updated",str(self.__radius)))
+
+        except ValueError:
+            logging.info("validation error while mutating radius")
+
+
+
+circle_logged = CircleLogged(34.2)
+
+# print(circle_logged.__dict__)
+
+
+# ---------------------------------------- Managing attribute deletions --------------------------------------------------------
+# 
+
+class TreeNode:
+
+    def __init__(self,data):
+        self.__data = data
+        self.__childrens = []
+
+    @property
+    def children(self):
+        return self.__childrens
+    
+    @children.setter
+    def children(self,val):
+        
+        if isinstance(val,list):
+            self.__childrens = val
+        
+        else:
+            del self.children
+            self.__childrens.append(val)
+
+    
+    @children.deleter
+    def children(self):
+        self.__childrens.clear()
+
+
+    
+    def __str__(self) -> str:
+
+        return f"{self.__class__.__name__}('{self.__data}')"
+    
+    def __repr__(self)->str:
+        return f"{self.__class__.__name__}('{self.__data}')"
+
+# Binary Tree
+tree = TreeNode(34)
+child1 = TreeNode(46)
+child2 = TreeNode(31)
+
+tree.children = [child1,child2]
+
+# del tree.children
+# print(tree)
+
+
+#  ---------------------------------------- backward Compatible class API's -----------------------------------------------------
+
+
+CENTS_PER_UNITS = 100
+class Currency:
+    
+    def __init__(self,units,cents):
+        self._total_cents = units * CENTS_PER_UNITS + cents
+    
+    @property
+    def units(self):
+        return self._total_cents // CENTS_PER_UNITS
+    
+    @units.setter
+    def units(self,val):
+        self._total_cents = self.cents + val * CENTS_PER_UNITS
+
+    @property
+    def cents(self):
+        return self._total_cents % CENTS_PER_UNITS
+    
+    @cents.setter
+    def cents(self,val):
+        self._total_cents = self.units * CENTS_PER_UNITS + val
+
+
+
+# Overriding Subclasses
+
+class Person:
+    def __init__(self,name):
+        self.__name = name
+
+    
+    @property
+    def name(self):
+        return self.__name
+    
+    @name.setter
+    def name(self,value):
+        self.__name = value
+
+
+    # Person imple;
+
+
+
+class Employee(Person):
+    @property
+    def name(self):
+        return super().name.upper()
+    
+
+
+emp = Employee("Pranjal")
+print(emp.__dict__)
+print(emp.name)
+
+# setting an attribute
+# emp.name = "JohnDoe" #; throws error: AttributeError: property 'name' of 'Employee' object has no setter
+
