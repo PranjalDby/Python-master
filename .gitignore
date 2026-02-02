@@ -18,5 +18,6 @@ Pandemonium(TRIBUTE).mp3
 classes_andoops/oops_gettingStarted/serialization/__pycache__/pickle_module.cpython-312.pyc
 ds/DynamicProgramming/__pycache__/knapsack.cpython-312.pyc
 ds/DynamicProgramming/__pycache__/minimum_coins.cpython-311.pyc
-.*
-./*
+.vscode
+.vs
+.idea
